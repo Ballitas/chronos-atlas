@@ -4,15 +4,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   Search,
-  Sparkles,
-  Globe2,
-  Lock,
-  MessageSquare,
+  ArrowUpRight,
   Image as ImageIcon,
-  ArrowRight,
-  Palette,
-  ShieldCheck,
+  MessageSquare,
+  Sparkles,
+  RotateCcw,
   Loader2,
+  X,
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 import { ThemeConfig } from '@/lib/themes';
@@ -67,12 +65,15 @@ export default function HomePage() {
         t.title.toLowerCase().includes(q) ||
         t.subtitle.toLowerCase().includes(q) ||
         t.region.toLowerCase().includes(q) ||
-        t.era.toLowerCase().includes(q);
+        t.era.toLowerCase().includes(q) ||
+        t.theme.label.toLowerCase().includes(q);
       return matchesRegion && matchesQuery;
     });
   }, [topics, search, selectedRegion]);
 
-  const handlePreviewTheme = (topic: TopicListItem) => {
+  const handlePreviewTheme = (e: React.MouseEvent, topic: TopicListItem) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (previewSlug === topic.slug) {
       setPreviewSlug(null);
       resetTheme();
@@ -83,195 +84,267 @@ export default function HomePage() {
   };
 
   return (
-    <div className="pb-12">
-      {/* Hero Banner */}
-      <section className="hero-banner border-b border-theme-border text-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-medium mb-5 backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Dynamic Thematic Research Platform · 20 Civilizations & States</span>
-          </div>
-          <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-tight max-w-3xl leading-tight mb-4">
-            Investigate Forgotten Empires, Island Microstates & Ancient Civilizations
-          </h1>
-          <p className="text-sm sm:text-base text-white/80 max-w-2xl leading-relaxed mb-8">
-            Enter any investigation dossier to transform the entire visual experience—palette,
-            typography, and archival motifs adapt dynamically to the civilization you are exploring.
-            Sign in with JWT authentication to unlock restricted archival plates, bookmark
-            research, and join scholarly discussions.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
-            <div className="p-3.5 rounded-xl bg-black/25 border border-white/15 backdrop-blur-sm">
-              <div className="flex items-center gap-2 text-amber-300 text-xs font-semibold mb-1">
-                <Palette className="w-4 h-4" /> Dynamic Theme Engine
-              </div>
-              <p className="text-xs text-white/75">
-                20 bespoke accessible `data-theme` palettes & typographic pairings.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-xl bg-black/25 border border-white/15 backdrop-blur-sm">
-              <div className="flex items-center gap-2 text-emerald-300 text-xs font-semibold mb-1">
-                <ShieldCheck className="w-4 h-4" /> JWT + Max 2 Devices
-              </div>
-              <p className="text-xs text-white/75">
-                Server-tracked device sessions, password recovery, and strict RBAC.
-              </p>
-            </div>
-            <div className="p-3.5 rounded-xl bg-black/25 border border-white/15 backdrop-blur-sm">
-              <div className="flex items-center gap-2 text-sky-300 text-xs font-semibold mb-1">
-                <Lock className="w-4 h-4" /> Protected Media & Boards
-              </div>
-              <p className="text-xs text-white/75">
-                Archival plates & discussions guarded by Bearer JWT endpoints.
-              </p>
-            </div>
-          </div>
+    <div className="relative">
+      {/* Ultra-Clean Apple / Linear Hero */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-12 text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-[11px] font-medium text-theme-muted mb-7 shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+          <span>20 Historical &amp; Geopolitical Dossiers</span>
+          <span className="opacity-35">·</span>
+          <span className="text-theme-text">Adaptive Theme Engine</span>
         </div>
-      </section>
 
-      {/* Search & Region Filter Bar */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 relative z-20">
-        <div className="p-4 rounded-2xl border border-theme-border bg-theme-surface shadow-lg flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-theme-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <h1 className="font-display text-4xl sm:text-6xl font-semibold tracking-[-0.035em] text-theme-text max-w-4xl mx-auto leading-[1.06] mb-5">
+          Research civilizations.
+          <span className="block text-theme-muted font-medium mt-1">
+            Watch the interface adapt.
+          </span>
+        </h1>
+
+        <p className="text-[15px] sm:text-[17px] text-theme-muted max-w-2xl mx-auto leading-relaxed font-normal mb-10">
+          Every subject in the archive transforms its color palette, typography, and archival
+          atmosphere dynamically. Protected by JWT sessions, a 2-device concurrency limit, and
+          role-based governance.
+        </p>
+
+        {/* Command-Bar Search Input */}
+        <div className="max-w-xl mx-auto relative group">
+          <div className="glass-surface rounded-2xl border border-theme-border group-focus-within:border-theme-accent/70 shadow-lg shadow-black/15 transition-all duration-200 flex items-center px-4 h-12">
+            <Search className="w-4 h-4 text-theme-muted shrink-0 mr-3" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search 20 topics (e.g., Timbuktu, Petra, Socotra, Lydia, Kiribati…)"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-theme-elevated border border-theme-border text-sm text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-theme-accent"
+              placeholder="Search civilizations, regions, eras, or themes…"
+              className="w-full bg-transparent text-[14px] text-theme-text placeholder:text-theme-muted/80 focus:outline-none"
             />
-          </div>
-          <div className="flex items-center gap-2">
-            <Globe2 className="w-4 h-4 text-theme-accent shrink-0" />
-            <select
-              value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-              className="px-3 py-2.5 rounded-xl bg-theme-elevated border border-theme-border text-sm text-theme-text focus:outline-none focus:border-theme-accent"
-            >
-              <option value="ALL">All Regions ({topics.length})</option>
-              {regions.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-            {previewSlug && (
+            {search ? (
               <button
-                onClick={() => {
-                  setPreviewSlug(null);
-                  resetTheme();
-                }}
-                className="px-3 py-2.5 rounded-xl border border-theme-accent text-xs font-semibold text-theme-accent hover:bg-theme-accentSoft transition shrink-0"
+                onClick={() => setSearch('')}
+                className="p-1 rounded-full text-theme-muted hover:text-theme-text transition"
+                aria-label="Clear search"
               >
-                Reset Theme
+                <X className="w-3.5 h-3.5" />
               </button>
+            ) : (
+              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md border border-theme-border text-[10px] font-mono text-theme-muted shrink-0">
+                {topics.length} TOPICS
+              </span>
             )}
           </div>
         </div>
+
+        {/* Minimal Horizontal Region Pills */}
+        <div className="mt-7 flex items-center justify-center gap-1.5 flex-wrap max-w-4xl mx-auto">
+          <button
+            onClick={() => setSelectedRegion('ALL')}
+            className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200 ${
+              selectedRegion === 'ALL'
+                ? 'bg-theme-text text-theme-bg shadow-sm'
+                : 'text-theme-muted hover:text-theme-text hover:bg-theme-elevated border border-transparent hover:border-theme-border'
+            }`}
+          >
+            All ({topics.length})
+          </button>
+          {regions.map((r) => (
+            <button
+              key={r}
+              onClick={() => setSelectedRegion(r)}
+              className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200 ${
+                selectedRegion === r
+                  ? 'bg-theme-text text-theme-bg shadow-sm'
+                  : 'text-theme-muted hover:text-theme-text hover:bg-theme-elevated border border-transparent hover:border-theme-border'
+              }`}
+            >
+              {r}
+            </button>
+          ))}
+
+          {previewSlug && (
+            <button
+              onClick={() => {
+                setPreviewSlug(null);
+                resetTheme();
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border border-theme-accent/50 bg-theme-accentSoft text-theme-accent hover:opacity-90 transition ml-1"
+            >
+              <RotateCcw className="w-3 h-3" /> Reset Preview
+            </button>
+          )}
+        </div>
       </section>
 
-      {/* Catalog Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="font-display text-2xl font-bold text-theme-text">
-              Research Catalog
-            </h2>
-            <p className="text-xs sm:text-sm text-theme-muted">
-              Showing {filtered.length} of {topics.length} cataloged investigation subjects. Click any card to enter its dynamic theme.
-            </p>
+      {/* Catalog Section */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
+        <div className="flex items-center justify-between mb-6 pb-3 border-b border-theme-border/60">
+          <div className="flex items-center gap-2 text-[12px] text-theme-muted">
+            <span className="font-mono text-theme-text font-medium">
+              {String(filtered.length).padStart(2, '0')}
+            </span>
+            <span>of {topics.length} investigation dossiers</span>
           </div>
+          <p className="text-[12px] text-theme-muted hidden sm:block">
+            Click <span className="text-theme-text font-medium">Preview</span> to test a theme live, or open any card
+          </p>
         </div>
 
         {loading ? (
-          <div className="py-20 flex flex-col items-center gap-3 text-theme-muted">
-            <Loader2 className="w-7 h-7 animate-spin text-theme-accent" />
-            <p className="text-sm">Loading historical archive…</p>
+          <div className="py-24 flex flex-col items-center gap-3 text-theme-muted">
+            <Loader2 className="w-5 h-5 animate-spin text-theme-accent" />
+            <p className="text-[13px]">Loading archive…</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center rounded-2xl border border-theme-border bg-theme-surface">
-            <p className="text-theme-muted text-sm">No investigation topics match your search.</p>
+          <div className="py-20 text-center rounded-2xl border border-theme-border bg-theme-surface/50">
+            <p className="text-sm text-theme-muted">No dossiers match &ldquo;{search}&rdquo;.</p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setSelectedRegion('ALL');
+              }}
+              className="mt-3 text-xs font-semibold text-theme-accent hover:underline"
+            >
+              Clear filters
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((topic, idx) => (
-              <article
-                key={topic.id}
-                className="group rounded-2xl border border-theme-border bg-theme-surface hover:border-theme-accent transition-all duration-300 overflow-hidden flex flex-col shadow-sm hover:shadow-xl"
-              >
-                {/* Dynamic Theme Swatch Header */}
-                <div
-                  className="h-28 p-4 flex flex-col justify-between relative text-white"
-                  style={{ background: topic.theme.heroGradient }}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filtered.map((topic, idx) => {
+              const isPreviewing = previewSlug === topic.slug;
+              return (
+                <Link
+                  key={topic.id}
+                  href={`/topics/${topic.slug}`}
+                  className="linear-card group relative rounded-2xl border border-theme-border/90 hover:border-theme-accent/60 overflow-hidden flex flex-col p-5"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-black/35 border border-white/15 backdrop-blur-sm">
-                      #{String(idx + 1).padStart(2, '0')} · {topic.region}
-                    </span>
+                  {/* Subtle top color hairline & ambient glow unique to each civilization */}
+                  <div
+                    className="absolute inset-x-0 top-0 h-[2px] opacity-80 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      background: `linear-gradient(90deg, transparent, ${topic.theme.accent}, transparent)`,
+                    }}
+                  />
+                  <div
+                    className="pointer-events-none absolute -top-20 -right-20 w-44 h-44 rounded-full opacity-[0.07] group-hover:opacity-[0.16] blur-2xl transition-opacity duration-500"
+                    style={{ backgroundColor: topic.theme.accent }}
+                  />
+
+                  {/* Top Row: Index + Region + Live Theme Preview Pill */}
+                  <div className="flex items-center justify-between gap-2 mb-4 relative z-10">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-mono text-[11px] text-theme-muted">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-theme-border" />
+                      <span className="text-[11px] font-medium text-theme-muted truncate">
+                        {topic.region}
+                      </span>
+                    </div>
+
                     <button
                       type="button"
-                      onClick={() => handlePreviewTheme(topic)}
-                      className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full bg-black/35 hover:bg-black/55 border border-white/20 transition"
-                      title="Preview this topic's dynamic theme live on the catalog"
+                      onClick={(e) => handlePreviewTheme(e, topic)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all duration-200 shrink-0 ${
+                        isPreviewing
+                          ? 'bg-theme-accent text-theme-accentFg border-transparent shadow-sm'
+                          : 'border-theme-border bg-theme-bg/50 text-theme-muted hover:text-theme-text hover:border-theme-accent/60'
+                      }`}
+                      title={`Preview ${topic.theme.label} theme`}
                     >
-                      <Palette className="w-3 h-3" />
-                      {previewSlug === topic.slug ? 'Active' : 'Preview'}
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{
+                          backgroundColor: isPreviewing
+                            ? topic.theme.accentForeground
+                            : topic.theme.accent,
+                        }}
+                      />
+                      {isPreviewing ? 'Active' : 'Preview'}
                     </button>
                   </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-medium text-white/90 truncate">
-                      {topic.era}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <span
-                        className="w-3.5 h-3.5 rounded-full border border-white/50"
-                        style={{ backgroundColor: topic.theme.bgPrimary }}
-                        title="Theme primary surface"
-                      />
-                      <span
-                        className="w-3.5 h-3.5 rounded-full border border-white/50"
-                        style={{ backgroundColor: topic.theme.accent }}
-                        title="Theme accent color"
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                {/* Card Content */}
-                <div className="p-5 flex-1 flex flex-col">
-                  <h3 className="font-display text-lg font-bold text-theme-text group-hover:text-theme-accent transition leading-snug mb-1.5">
-                    <Link href={`/topics/${topic.slug}`}>{topic.title}</Link>
-                  </h3>
-                  <p className="text-xs text-theme-accent font-medium mb-2.5">
-                    {topic.theme.label}
-                  </p>
-                  <p className="text-xs sm:text-sm text-theme-muted leading-relaxed line-clamp-3 mb-5 flex-1">
+                  {/* Title & Era */}
+                  <div className="relative z-10 mb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <h2 className="text-[16px] font-semibold tracking-[-0.015em] text-theme-text group-hover:text-theme-accent transition-colors leading-snug">
+                        {topic.title}
+                      </h2>
+                      <ArrowUpRight className="w-4 h-4 text-theme-muted opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-theme-accent transition-all duration-200 shrink-0 mt-0.5" />
+                    </div>
+                    <p className="text-[11px] font-mono text-theme-muted/90 mt-1">
+                      {topic.era}
+                    </p>
+                  </div>
+
+                  {/* Concise Summary */}
+                  <p className="relative z-10 text-[13px] text-theme-muted leading-relaxed line-clamp-3 mb-5 flex-1">
                     {topic.summary}
                   </p>
 
-                  <div className="pt-3.5 border-t border-theme-border flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-3 text-[11px] text-theme-muted">
-                      <span className="inline-flex items-center gap-1" title="JWT-Protected Archival Plates">
-                        <ImageIcon className="w-3.5 h-3.5 text-theme-accent" /> {topic.mediaCount} plates
-                      </span>
-                      <span className="inline-flex items-center gap-1" title="Protected Discussions">
-                        <MessageSquare className="w-3.5 h-3.5 text-theme-accent" /> {topic.discussionCount} threads
+                  {/* Bottom Theme Signature + Protected Asset Metrics */}
+                  <div className="relative z-10 pt-3.5 border-t border-theme-border/70 flex items-center justify-between gap-2">
+                    {/* Precision 3-dot palette signature */}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex items-center -space-x-1 shrink-0">
+                        <span
+                          className="w-3.5 h-3.5 rounded-full ring-1 ring-black/30"
+                          style={{ backgroundColor: topic.theme.bgPrimary }}
+                        />
+                        <span
+                          className="w-3.5 h-3.5 rounded-full ring-1 ring-black/30"
+                          style={{ backgroundColor: topic.theme.bgSurface }}
+                        />
+                        <span
+                          className="w-3.5 h-3.5 rounded-full ring-1 ring-black/30"
+                          style={{ backgroundColor: topic.theme.accent }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-theme-muted truncate">
+                        {topic.theme.label}
                       </span>
                     </div>
-                    <Link
-                      href={`/topics/${topic.slug}`}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-theme-accent hover:underline"
-                    >
-                      Investigate <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
+
+                    <div className="flex items-center gap-2.5 text-[11px] font-mono text-theme-muted shrink-0">
+                      <span className="inline-flex items-center gap-1" title="JWT-Protected Archival Plates">
+                        <ImageIcon className="w-3 h-3" /> {topic.mediaCount}
+                      </span>
+                      <span className="inline-flex items-center gap-1" title="Protected Discussion Threads">
+                        <MessageSquare className="w-3 h-3" /> {topic.discussionCount}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
+
+        {/* Subtle Bottom Capability Strip */}
+        <div className="mt-16 pt-8 border-t border-theme-border/60 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+          <div className="space-y-1">
+            <p className="text-[12px] font-semibold text-theme-text flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-theme-accent" /> Dynamic Thematic Engine
+            </p>
+            <p className="text-[12px] text-theme-muted leading-relaxed">
+              CSS Custom Properties scoped to <code className="text-theme-text/90">data-theme</code> adapt each view seamlessly while maintaining legible contrast.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[12px] font-semibold text-theme-text">
+              JWT &amp; 2-Device Session Control
+            </p>
+            <p className="text-[12px] text-theme-muted leading-relaxed">
+              Every protected endpoint verifies both cryptographic token signatures and live server session records per <code className="text-theme-text/90">userId</code>.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[12px] font-semibold text-theme-text">
+              Protected Media &amp; RBAC Governance
+            </p>
+            <p className="text-[12px] text-theme-muted leading-relaxed">
+              Archival plates and discussion boards require Bearer tokens; Investigator &amp; Admin operations enforce server-side <code className="text-theme-text/90">403</code> guards.
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );
