@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cinzel: 'Cinzel', Georgia, serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+  --font-space: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-lora: 'Lora', Georgia, serif;
+  --bg-primary: #0b101b;
+  --bg-surface: #121a2a;
+  --bg-elevated: #1a253b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent: #d97706;
+  --accent-foreground: #ffffff;
+  --accent-soft: rgba(217, 119, 6, 0.16);
+  --border: #25334d;
+  --hero-gradient: linear-gradient(135deg, #162238 0%, #0b101b 55%, #261b12 100%);
+  --font-display: Georgia, serif;
+  --font-body: system-ui, -apple-system, sans-serif;
+  --motif-style: radial-gradient(circle at 20% 20%, rgba(217, 119, 6, 0.12) 0%, transparent 45%);
+}
+
+html,
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition: background-color 0.35s ease, color 0.35s ease;
+  min-height: 100vh;
+}
+
+body {
+  background-image: var(--motif-style);
+  background-attachment: fixed;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.hero-banner {
+  background: var(--hero-gradient);
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
